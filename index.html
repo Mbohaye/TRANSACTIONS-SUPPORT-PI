@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="pi-sdk-validation" content="75f45648693b0f868f4155a7b78c92">
+    
+    <title>TRANSACTIONS & SUPPORT PI</title>
+    
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+
+    <style>
+        :root { --pi-purple: #5e2d89; --pi-gold: #ffa500; --pi-light: #f4f0f8; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; color: #333; }
+        header { background: var(--pi-purple); color: white; padding: 30px 20px; text-align: center; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .container { padding: 20px; max-width: 550px; margin: auto; }
+        
+        .services-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px; }
+        .service-card { background: white; padding: 20px; border-radius: 18px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.04); cursor: pointer; border: 1.5px solid #f0f0f0; transition: all 0.2s ease; }
+        .service-card:hover { border-color: var(--pi-purple); background-color: var(--pi-light); transform: translateY(-3px); }
+        .service-card:active { transform: scale(0.96); }
+        .service-card span { font-size: 28px; display: block; margin-bottom: 10px; }
+        .service-title { font-weight: bold; font-size: 14px; color: var(--pi-purple); }
+
+        #payment-details { display: none; background: white; padding: 30px; border-radius: 25px; margin-top: 25px; text-align: center; border: 2px solid var(--pi-purple); box-shadow: 0 15px 30px rgba(94, 45, 137, 0.1); }
+        input { width: 100%; padding: 15px; margin: 12px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--pi-purple); box-shadow: 0 0 8px rgba(94, 45, 137, 0.2); }
+        
+        #auth-section { text-align: center; margin-top: 80px; padding: 20px; }
+        .btn-main { background: var(--pi-purple); color: white; padding: 18px; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 6px 20px rgba(94, 45, 137, 0.3); }
+        .btn-main:hover { background: #4a236d; }
+        .btn-main:disabled { background: #bbb; box-shadow: none; cursor: not-allowed; }
+        
+        .user-banner { background: #e8f5e9; color: #1b5e20; padding: 15px; border-radius: 15px; display: none; text-align: center; font-weight: bold; margin-bottom: 20px; border: 1px solid #c8e6c9; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 40px; padding-bottom: 30px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 style="margin:0; font-size: 24px;">TRANSACTIONS & SUPPORT PI</h1>
+    <p style="font-size: 14px; margin: 8px 0 0 0; opacity: 0.8;">Huduma za Malipo na Miamala ya Pi</p>
+</header>
+
+<div class="container">
+    <div id="user-display" class="user-banner"></div>
+
+    <div id="auth-section">
+        <p style="color: #555; margin-bottom: 25px;">Karibu! Tafadhali unganisha Wallet yako ili kufurahia huduma zetu za LUKU, Mikopo, DSTV na nyinginezo.</p>
+        <button id="auth-btn" class="btn-main" onclick="login()">Ingia na Pi Wallet</button>
+    </div>
+
+    <div id="payment-details">
+        <h4 id="selected-service-name" style="color: var(--pi-purple); margin-top:0; font-size: 20px;">Maelezo ya Malipo</h4>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Hakikisha namba na kiasi ni sahihi.</p>
+        <input type="text" id="customer-info" placeholder="Namba ya simu / mita / akaunti">
+        <input type="number" id="pi-amount" placeholder="Kiasi cha Pi (Mfano: 3.14)" step="any" min="0.0001">
+        <button id="pay-button" class="btn-main" onclick="processPiPayment()">Lipa Sasa</button>
+        <p style="font-size: 14px; color: #c62828; margin-top: 20px; cursor: pointer; font-weight: bold;" onclick="cancelPayment()">Ghairi na Rudi</p>
+    </div>
+
+    <div id="services" class="services-grid">
+        <div class="service-card" onclick="showInput('Mikopo ya Pi')"> <span>💰</span> <span class="service-title">Mikopo ya Pi</span> </div>
+        <div class="service-card" onclick="showInput('Umeme - LUKU')"> <span>⚡</span> <span class="service-title">Nunua LUKU</span> </div>
+        <div class="service-card" onclick="showInput('Betting')"> <span>🎯</span> <span class="service-title">Kubeti</span> </div>
+        <div class="service-card" onclick="showInput('NSSF')"> <span>🏥</span> <span class="service-title">Huduma za NSSF</span> </div>
+        <div class="service-card" onclick="showInput('Vifurushi')"> <span>📶</span> <span class="service-title">Vifurushi vya Simu</span> </div>
+        <div class="service-card" onclick="showInput('DSTV/Zuku')"> <span>📺</span> <span class="service-title">King'amuzi (DSTV)</span> </div>
+        <div class="service-card" onclick="showInput('Ada za Shule')"> <span>🎓</span> <span class="service-title">Ada za Shule</span> </div>
+        <div class="service-card" onclick="showInput('Typing Services')"> <span>⌨️</span> <span class="service-title">Huduma ya Kutype</span> </div>
+        <div class="service-card" onclick="showInput('Nunua Pi kwa Tsh')"> <span>🇹🇿</span> <span class="service-title">Nunua Pi (Tsh)</span> </div>
+        <div class="service-card" onclick="alert('Wasiliana na Admin wetu @support kusajiliwa kuwa Agent.')"> <span>👷</span> <span class="service-title">Mawakala</span> </div>
+    </div>
+</div>
+
+<div class="footer">
+    App hii inafuata vigezo na masharti ya Pi Network SDK.<br>
+    &copy; 2026 TRANSACTIONS & SUPPORT PI.<br>
+    Mainnet Verified Application.
+</div>
+
+<script>
+    const Pi = window.Pi;
+    let selectedService = "";
+
+    // Muhimu kwa Checklist 8
+    Pi.init({ version: "2.0", sandbox: false });
+
+    async function login() {
+        const authBtn = document.getElementById('auth-btn');
+        authBtn.disabled = true;
+        authBtn.innerText = "Inatayarisha...";
+
+        try {
+            const scopes = ['username', 'payments'];
+            const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+            
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('user-display').style.display = 'block';
+            document.getElementById('user-display').innerText = "Mteja: " + auth.user.username;
+            document.getElementById('services').style.display = 'grid';
+        } catch (err) {
+            console.error(err);
+            alert("Hitilafu: Tafadhali fungua App hii ndani ya Pi Browser pekee.");
+            authBtn.disabled = false;
+            authBtn.innerText = "Ingia na Pi Wallet";
+        }
+    }
+
+    function showInput(service) {
+        selectedService = service;
+        document.getElementById('services').style.display = 'none';
+        document.getElementById('payment-details').style.display = 'block';
+        document.getElementById('selected-service-name').innerText = "Lipia: " + service;
+    }
+
+    function cancelPayment() {
+        document.getElementById('payment-details').style.display = 'none';
+        document.getElementById('services').style.display = 'grid';
+        document.getElementById('customer-info').value = "";
+        document.getElementById('pi-amount').value = "";
+    }
+
+    function processPiPayment() {
+        const info = document.getElementById('customer-info').value;
+        const amt = document.getElementById('pi-amount').value;
+        const payBtn = document.getElementById('pay-button');
+
+        if(!info || !amt) {
+            alert("Tafadhali jaza taarifa zote!");
+            return;
+        }
+
+        payBtn.disabled = true;
+        payBtn.innerText = "Inatuma Maombi...";
+
+        Pi.createPayment({
+            amount: parseFloat(amt),
+            memo: "Malipo ya " + selectedService + ": " + info,
+            metadata: { service: selectedService, account: info }
+        }, {
+            onReadyForServerApproval: (paymentId) => {
+                // MUHIMU: Hapa unatuma paymentId kwenye Backend yako (Server-side)
+                // ili seva yako iidhinishe malipo kupitia Pi API.
+                console.log("Payment Approval Required for ID:", paymentId);
+            },
+            onReadyForServerCompletion: (paymentId, txid) => {
+                // MUHIMU: Hapa seva yako inatakiwa kutuma amri ya kukamilisha malipo.
+                alert("HONGERA! Malipo yamekamilika.\nTransaction ID: " + txid);
+                payBtn.disabled = false;
+                payBtn.innerText = "Lipa Sasa";
+                cancelPayment();
+            },
+            onCancel: (paymentId) => {
+                payBtn.disabled = false;
+                payBtn.innerText = "Lipa Sasa";
+            },
+            onError: (err, payment) => {
+                console.error("Payment Error:", err);
+                alert("Malipo hayakufaulu. Jaribu tena.");
+                payBtn.disabled = false;
+                payBtn.innerText = "Lipa Sasa";
+            }
+        });
+    }
+
+    function onIncompletePaymentFound(payment) {
+        console.warn("Payment incomplete found:", payment.identifier);
+    }
+</script>
+</body>
+</html>
