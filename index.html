@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta name="pi-sdk-validation" content="75f45648693b0f868f4155a7b78c92">
+    <meta name="pi-sdk-validation" content="75f45648693b0f868f4155a7b78c92dcef7b3f89e19c5d13ddfffe6ff4f12cb93ddccb706331652e1b71adbf8e1bfae9262b3f34a990466410a6a084887d3559">
     
     <title>TRANSACTIONS & SUPPORT PI</title>
     
@@ -84,7 +84,7 @@
     const Pi = window.Pi;
     let selectedService = "";
 
-    // Muhimu kwa Checklist 8
+    // Anzisha Pi SDK
     Pi.init({ version: "2.0", sandbox: false });
 
     async function login() {
@@ -141,12 +141,9 @@
             metadata: { service: selectedService, account: info }
         }, {
             onReadyForServerApproval: (paymentId) => {
-                // MUHIMU: Hapa unatuma paymentId kwenye Backend yako (Server-side)
-                // ili seva yako iidhinishe malipo kupitia Pi API.
                 console.log("Payment Approval Required for ID:", paymentId);
             },
             onReadyForServerCompletion: (paymentId, txid) => {
-                // MUHIMU: Hapa seva yako inatakiwa kutuma amri ya kukamilisha malipo.
                 alert("HONGERA! Malipo yamekamilika.\nTransaction ID: " + txid);
                 payBtn.disabled = false;
                 payBtn.innerText = "Lipa Sasa";
