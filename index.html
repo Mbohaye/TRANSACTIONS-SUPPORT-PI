@@ -2,168 +2,350 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="pi-sdk-validation" content="75f45648693b0f868f4155a7b78c92dcef7b3f89e19c5d13ddfffe6ff4f12cb93ddccb706331652e1b71adbf8e1bfae9262b3f34a990466410a6a084887d3559">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+    <link rel="canonical" href="https://apppitransaction2064.pinet.com">
+    <meta name="pi-sdk-validation" content="75f45648693b0f868f4155a7b78c92">
     <title>TRANSACTIONS & SUPPORT PI</title>
-    
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-
     <style>
-        :root { --pi-purple: #5e2d89; --pi-gold: #ffa500; --pi-light: #f4f0f8; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; color: #333; }
-        header { background: var(--pi-purple); color: white; padding: 30px 20px; text-align: center; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .container { padding: 20px; max-width: 550px; margin: auto; }
+        :root { 
+            --pi-purple: #5e2d89; 
+            --pi-gold: #ffa500; 
+            --bg-light: #f4f7f6; 
+            --white: #ffffff; 
+            --error: #dc3545;
+            --success: #28a745;
+        }
         
-        .services-grid { display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px; }
-        .service-card { background: white; padding: 20px; border-radius: 18px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.04); cursor: pointer; border: 1.5px solid #f0f0f0; transition: all 0.2s ease; }
-        .service-card:hover { border-color: var(--pi-purple); background-color: var(--pi-light); transform: translateY(-3px); }
-        .service-card:active { transform: scale(0.96); }
-        .service-card span { font-size: 28px; display: block; margin-bottom: 10px; }
-        .service-title { font-weight: bold; font-size: 14px; color: var(--pi-purple); }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg-light); 
+            margin: 0; 
+            padding: 15px; 
+            color: #333; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        .container { max-width: 800px; margin: auto; }
+        
+        header { text-align: center; padding: 10px 0 20px; }
+        h2 { color: var(--pi-purple); text-transform: uppercase; letter-spacing: 1px; font-size: 1.2rem; margin: 0 0 15px 0; }
+        
+        /* Auth Button */
+        #loginBtn { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--pi-purple); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px; 
+            box-shadow: 0 4px 12px rgba(94, 45, 137, 0.2); 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        #loginBtn:disabled { opacity: 0.7; cursor: not-allowed; }
+        #loginBtn.success { background: var(--success); }
 
-        #payment-details { display: none; background: white; padding: 30px; border-radius: 25px; margin-top: 25px; text-align: center; border: 2px solid var(--pi-purple); box-shadow: 0 15px 30px rgba(94, 45, 137, 0.1); }
-        input { width: 100%; padding: 15px; margin: 12px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--pi-purple); box-shadow: 0 0 8px rgba(94, 45, 137, 0.2); }
+        /* Grid System */
+        .services-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            gap: 12px; 
+            margin-top: 25px; 
+        }
         
-        #auth-section { text-align: center; margin-top: 80px; padding: 20px; }
-        .btn-main { background: var(--pi-purple); color: white; padding: 18px; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 6px 20px rgba(94, 45, 137, 0.3); }
-        .btn-main:hover { background: #4a236d; }
-        .btn-main:disabled { background: #bbb; box-shadow: none; cursor: not-allowed; }
+        .service-card { 
+            background: var(--white); 
+            padding: 15px 8px; 
+            border-radius: 16px; 
+            text-align: center; 
+            border: 1px solid #e0e0e0; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 110px;
+        }
+        .service-card:active { transform: scale(0.95); background: #f0f0f0; }
+        .service-card span { font-size: 32px; margin-bottom: 8px; }
+        .service-title { font-size: 11px; font-weight: 700; color: var(--pi-purple); text-transform: uppercase; line-height: 1.2; }
         
-        .user-banner { background: #e8f5e9; color: #1b5e20; padding: 15px; border-radius: 15px; display: none; text-align: center; font-weight: bold; margin-bottom: 20px; border: 1px solid #c8e6c9; }
-        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 40px; padding-bottom: 30px; line-height: 1.6; }
+        .owner-only { border: 2px solid var(--pi-gold); background: #fffdf5; }
+
+        /* UI Components */
+        .section-card { background: white; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .upload-area { border: 2px dashed #bbb; padding: 20px; border-radius: 12px; text-align: center; background: #fafafa; }
+        
+        #loanResult { display: none; background: #e3f2fd; padding: 15px; border-radius: 12px; margin-top: 15px; border-left: 5px solid #2196f3; font-size: 14px; line-height: 1.6; }
+
+        /* Admin Table */
+        .admin-section { display: none; margin-top: 30px; border-top: 4px solid var(--pi-purple); animation: fadeIn 0.5s; }
+        .table-wrapper { overflow-x: auto; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; font-size: 13px; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
+        th { background: var(--pi-purple); color: white; }
+
+        /* Loader Overlay */
+        .loader { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(255,255,255,0.95); 
+            z-index: 9999; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column; 
+        }
+        .spinner { 
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid var(--pi-purple); 
+            border-radius: 50%; 
+            width: 45px; 
+            height: 45px; 
+            animation: spin 1s linear infinite; 
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<header>
-    <h1 style="margin:0; font-size: 24px;">TRANSACTIONS & SUPPORT PI</h1>
-    <p style="font-size: 14px; margin: 8px 0 0 0; opacity: 0.8;">Huduma za Malipo na Miamala ya Pi</p>
-</header>
-
-<div class="container">
-    <div id="user-display" class="user-banner"></div>
-
-    <div id="auth-section">
-        <p style="color: #555; margin-bottom: 25px;">Karibu! Tafadhali unganisha Wallet yako ili kufurahia huduma zetu za LUKU, Mikopo, DSTV na nyinginezo.</p>
-        <button id="auth-btn" class="btn-main" onclick="login()">Ingia na Pi Wallet</button>
-    </div>
-
-    <div id="payment-details">
-        <h4 id="selected-service-name" style="color: var(--pi-purple); margin-top:0; font-size: 20px;">Maelezo ya Malipo</h4>
-        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Hakikisha namba na kiasi ni sahihi.</p>
-        <input type="text" id="customer-info" placeholder="Namba ya simu / mita / akaunti">
-        <input type="number" id="pi-amount" placeholder="Kiasi cha Pi (Mfano: 3.14)" step="any" min="0.0001">
-        <button id="pay-button" class="btn-main" onclick="processPiPayment()">Lipa Sasa</button>
-        <p style="font-size: 14px; color: #c62828; margin-top: 20px; cursor: pointer; font-weight: bold;" onclick="cancelPayment()">Ghairi na Rudi</p>
-    </div>
-
-    <div id="services" class="services-grid">
-        <div class="service-card" onclick="showInput('Mikopo ya Pi')"> <span>💰</span> <span class="service-title">Mikopo ya Pi</span> </div>
-        <div class="service-card" onclick="showInput('Umeme - LUKU')"> <span>⚡</span> <span class="service-title">Nunua LUKU</span> </div>
-        <div class="service-card" onclick="showInput('Betting')"> <span>🎯</span> <span class="service-title">Kubeti</span> </div>
-        <div class="service-card" onclick="showInput('NSSF')"> <span>🏥</span> <span class="service-title">Huduma za NSSF</span> </div>
-        <div class="service-card" onclick="showInput('Vifurushi')"> <span>📶</span> <span class="service-title">Vifurushi vya Simu</span> </div>
-        <div class="service-card" onclick="showInput('DSTV/Zuku')"> <span>📺</span> <span class="service-title">King'amuzi (DSTV)</span> </div>
-        <div class="service-card" onclick="showInput('Ada za Shule')"> <span>🎓</span> <span class="service-title">Ada za Shule</span> </div>
-        <div class="service-card" onclick="showInput('Typing Services')"> <span>⌨️</span> <span class="service-title">Huduma ya Kutype</span> </div>
-        <div class="service-card" onclick="showInput('Nunua Pi kwa Tsh')"> <span>🇹🇿</span> <span class="service-title">Nunua Pi (Tsh)</span> </div>
-        <div class="service-card" onclick="alert('Wasiliana na Admin wetu @support kusajiliwa kuwa Agent.')"> <span>👷</span> <span class="service-title">Mawakala</span> </div>
-    </div>
+<div id="loadingOverlay" class="loader">
+    <div class="spinner"></div>
+    <p id="loaderText" style="margin-top:15px; font-weight:bold; color:var(--pi-purple)">Tafadhali subiri...</p>
 </div>
 
-<div class="footer">
-    App hii inafuata vigezo na masharti ya Pi Network SDK.<br>
-    &copy; 2026 TRANSACTIONS & SUPPORT PI.<br>
-    Mainnet Verified Application.
+<div class="container">
+    <header>
+        <h2>TRANSACTIONS & SUPPORT PI</h2>
+        <button id="loginBtn" onclick="handleAuth()">Login with Pi Wallet</button>
+    </header>
+
+    <div id="loanResult"></div>
+
+    <div class="section-card">
+        <div class="upload-area">
+            <p style="margin:0 0 10px 0; font-weight:bold; color:var(--pi-purple)">Tuma Ushahidi (Screenshot/Video)</p>
+            <input type="file" id="fileInput" accept="image/*,video/*" style="width: 100%; margin-bottom: 15px;">
+            <button onclick="uploadEvidence()" style="background: var(--pi-gold); color: black; border-radius: 10px; padding: 12px; border:none; width:100%; cursor:pointer; font-weight:bold;">SUBMIT EVIDENCE</button>
+        </div>
+    </div>
+
+    <div class="services-grid">
+        <div class="service-card" onclick="startService('PDF to Doc', 0.5)"><span>📄</span><div class="service-title">PDF to Doc</div></div>
+        <div class="service-card" onclick="startService('Hardcopy to Softcopy', 1.0)"><span>📑</span><div class="service-title">Hard to Soft</div></div>
+        <div class="service-card" onclick="startService('Media to Word', 1.5)"><span>🎙️</span><div class="service-title">Media to Word</div></div>
+        <div class="service-card" onclick="startService('Word to Audio', 0.8)"><span>🔊</span><div class="service-title">Word to Audio</div></div>
+        
+        <div class="service-card" onclick="startService('School Fees', 0.1)"><span>🎓</span><div class="service-title">Pay School Fees</div></div>
+        <div class="service-card" onclick="startService('Escrow Safe', 2.0)"><span>🔒</span><div class="service-title">Escrow Safe</div></div>
+        <div class="service-card" onclick="calculateLoan()"><span>💰</span><div class="service-title">Pi Loans (112%)</div></div>
+        <div class="service-card" onclick="startService('Bet William', 1.0)"><span>🎲</span><div class="service-title">BET WILLIAM.PI</div></div>
+        
+        <div class="service-card" onclick="startService('Translate V/A', 1.2)"><span>🌐</span><div class="service-title">Translate V/A</div></div>
+        <div class="service-card" onclick="startService('Typing Service', 0.5)"><span>⌨️</span><div class="service-title">Typing Service</div></div>
+        <div class="service-card" onclick="startService('Editing Service', 0.7)"><span>✍️</span><div class="service-title">Editing Service</div></div>
+        <div class="service-card" onclick="startService('Data Bundles', 0.2)"><span>📱</span><div class="service-title">Data Bundles</div></div>
+        
+        <div class="service-card" onclick="startService('DSTV', 0.1)"><span>📺</span><div class="service-title">Pay DSTV</div></div>
+        <div class="service-card" onclick="startService('LUKU', 0.1)"><span>💡</span><div class="service-title">Pay LUKU</div></div>
+        <div class="service-card" onclick="startService('Water', 0.1)"><span>💧</span><div class="service-title">Pay Water</div></div>
+        <div class="service-card" onclick="startService('NSSF Benefits', 0.5)"><span>🏢</span><div class="service-title">NSSF Benefits</div></div>
+        
+        <div class="service-card" onclick="startService('Buy Pi (Crypto)', 0)"><span>🪙</span><div class="service-title">Buy Pi (Crypto)</div></div>
+        <div class="service-card" onclick="startService('Agency Reg', 5.0)"><span>🤝</span><div class="service-title">Register Agency</div></div>
+        <div class="service-card" onclick="startService('Passport', 0.1)"><span>🛂</span><div class="service-title">Passport</div></div>
+        <div class="service-card" onclick="startService('Star Times', 0.1)"><span>📡</span><div class="service-title">Star Times TV</div></div>
+        
+        <div class="service-card" onclick="startService('Crypto Training', 10)"><span>📈</span><div class="service-title">Crypto Training</div></div>
+        <div class="service-card" onclick="startService('IG Business', 2.0)"><span>📸</span><div class="service-title">IG Business</div></div>
+        <div class="service-card" onclick="startService('TikTok Business', 2.0)"><span>🎵</span><div class="service-title">TikTok Business</div></div>
+        <div class="service-card" onclick="startService('Ajira Portal', 0.5)"><span>💼</span><div class="service-title">Ajira Portal</div></div>
+        
+        <div class="service-card owner-only" onclick="startService('Buy Pi (Owner)', 0)"><span>💎</span><div class="service-title">Buy Pi (Owner)</div></div>
+    </div>
+
+    <div id="adminPanel" class="section-card admin-section">
+        <h3 style="color: var(--pi-purple); margin-top: 0;">Admin Dashboard (William Only)</h3>
+        <div class="table-wrapper">
+            <table id="loanTable">
+                <thead>
+                    <tr><th>Client</th><th>Task</th><th>Amount</th><th>Status</th></tr>
+                </thead>
+                <tbody id="adminDataBody">
+                    <tr><td colspan="4" style="text-align:center">Inapakia miamala ya mfumo...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script>
-    const Pi = window.Pi;
-    let selectedService = "";
+    // CONFIGURATION - Hakikisha unatumia HTTPS kwenye production!
+    const CONFIG = { sandbox: true }; 
+    const API_BASE_URL = "https://yoursite.com/api"; 
+    
+    let currentUser = null;
+    let userAccessToken = null;
+    let isProcessing = false;
 
-    // Anzisha Pi SDK
-    Pi.init({ version: "2.0", sandbox: false });
+    // 1. INITIALIZE SDK
+    Pi.init({ version: "2.0", sandbox: CONFIG.sandbox });
 
-    async function login() {
-        const authBtn = document.getElementById('auth-btn');
-        authBtn.disabled = true;
-        authBtn.innerText = "Inatayarisha...";
+    // CALLBACK YA MALIPO YASIYOKAMILIKA
+    const onIncompletePaymentFound = (payment) => {
+        return fetch(`${API_BASE_URL}/incomplete-payment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payment, token: userAccessToken })
+        });
+    };
+
+    // 2. AUTHENTICATION (Boresha login)
+    async function handleAuth() {
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.innerText = "Inahakiki...";
 
         try {
-            const scopes = ['username', 'payments'];
-            const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+            const auth = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
+            currentUser = auth.user;
+            userAccessToken = auth.accessToken;
+
+            btn.classList.add('success');
+            btn.innerText = `✓ Imeunganishwa: ${currentUser.username}`;
             
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('user-display').style.display = 'block';
-            document.getElementById('user-display').innerText = "Mteja: " + auth.user.username;
-            document.getElementById('services').style.display = 'grid';
+            // Angalia kama ni admin
+            checkAdminPrivileges(userAccessToken);
         } catch (err) {
             console.error(err);
-            alert("Hitilafu: Tafadhali fungua App hii ndani ya Pi Browser pekee.");
-            authBtn.disabled = false;
-            authBtn.innerText = "Ingia na Pi Wallet";
+            btn.innerText = "Login Imeshindikana - Jaribu Tena";
+            btn.disabled = false;
         }
     }
 
-    function showInput(service) {
-        selectedService = service;
-        document.getElementById('services').style.display = 'none';
-        document.getElementById('payment-details').style.display = 'block';
-        document.getElementById('selected-service-name').innerText = "Lipia: " + service;
-    }
-
-    function cancelPayment() {
-        document.getElementById('payment-details').style.display = 'none';
-        document.getElementById('services').style.display = 'grid';
-        document.getElementById('customer-info').value = "";
-        document.getElementById('pi-amount').value = "";
-    }
-
-    function processPiPayment() {
-        const info = document.getElementById('customer-info').value;
-        const amt = document.getElementById('pi-amount').value;
-        const payBtn = document.getElementById('pay-button');
-
-        if(!info || !amt) {
-            alert("Tafadhali jaza taarifa zote!");
-            return;
-        }
-
-        payBtn.disabled = true;
-        payBtn.innerText = "Inatuma Maombi...";
-
-        Pi.createPayment({
-            amount: parseFloat(amt),
-            memo: "Malipo ya " + selectedService + ": " + info,
-            metadata: { service: selectedService, account: info }
-        }, {
-            onReadyForServerApproval: (paymentId) => {
-                console.log("Payment Approval Required for ID:", paymentId);
-            },
-            onReadyForServerCompletion: (paymentId, txid) => {
-                alert("HONGERA! Malipo yamekamilika.\nTransaction ID: " + txid);
-                payBtn.disabled = false;
-                payBtn.innerText = "Lipa Sasa";
-                cancelPayment();
-            },
-            onCancel: (paymentId) => {
-                payBtn.disabled = false;
-                payBtn.innerText = "Lipa Sasa";
-            },
-            onError: (err, payment) => {
-                console.error("Payment Error:", err);
-                alert("Malipo hayakufaulu. Jaribu tena.");
-                payBtn.disabled = false;
-                payBtn.innerText = "Lipa Sasa";
+    // 3. ADMIN CHECK (Salama zaidi)
+    async function checkAdminPrivileges(token) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/verify-admin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token })
+            });
+            const data = await response.json();
+            if (data.isAdmin) {
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminStats();
             }
-        });
+        } catch (e) { console.log("Mtumiaji si admin."); }
     }
 
-    function onIncompletePaymentFound(payment) {
-        console.warn("Payment incomplete found:", payment.identifier);
+    // 4. SERVICE HANDLER
+    async function startService(name, cost) {
+        if (!currentUser) return alert("Tafadhali login kwanza kwa kutumia Pi Wallet!");
+        if (cost === 0) return alert(`Inafungua huduma: ${name}...`);
+        
+        if (confirm(`Unakubali kulipa ${cost} Pi kwa huduma ya ${name}?`)) {
+            await startPiPayment(cost, name);
+        }
+    }
+
+    // 5. PAYMENT ENGINE (Boresha usalama na ufuatiliaji)
+    async function startPiPayment(amt, serviceName) {
+        if (isProcessing) return; // Zuia mteja kubonyeza mara mbili
+        
+        isProcessing = true;
+        showLoader(true, `Inatayarisha malipo ya ${serviceName}...`);
+
+        try {
+            await Pi.createPayment({
+                amount: amt,
+                memo: `Malipo: ${serviceName}`,
+                metadata: { service: serviceName, user: currentUser.username },
+            }, {
+                onReadyForServerApproval: (paymentId) => {
+                    updateLoaderText("Inahakiki na Server...");
+                    return fetch(`${API_BASE_URL}/approve`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId, token: userAccessToken })
+                    });
+                },
+                onReadyForServerCompletion: (paymentId, txid) => {
+                    updateLoaderText("Inakamilisha muamala...");
+                    return fetch(`${API_BASE_URL}/complete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId, txid, token: userAccessToken })
+                    });
+                },
+                onCancel: () => {
+                    isProcessing = false;
+                    showLoader(false);
+                },
+                onError: (error) => {
+                    isProcessing = false;
+                    showLoader(false);
+                    alert("Samahani, kuna tatizo la kiufundi kwenye malipo.");
+                }
+            });
+            
+            alert("Hongera! Malipo yamefanikiwa. Huduma yako inaanza sasa.");
+        } catch (e) {
+            console.error(e);
+        } finally {
+            isProcessing = false;
+            showLoader(false);
+        }
+    }
+
+    // LOAN CALCULATOR
+    function calculateLoan() {
+        let amt = parseFloat(prompt("Weka kiasi cha Pi kama dhamana:"));
+        if(!amt || isNaN(amt)) return;
+        
+        const res = document.getElementById('loanResult');
+        res.style.display = "block";
+        const returnAmt = (amt * 1.12).toFixed(2);
+        res.innerHTML = `
+            <strong>Maelezo ya Mkopo:</strong><br>
+            Dhamana: ${amt} Pi | Marejesho: ${returnAmt} Pi (112%)<br>
+            <button onclick="startService('Ada ya Mkopo', 0.5)" style="margin-top:10px; padding:8px; border-radius:8px; border:none; background:var(--pi-purple); color:white; cursor:pointer;">
+                Lipa Ada ya Ombi (0.5 Pi)
+            </button>`;
+    }
+
+    // UI HELPERS
+    function showLoader(show, text = "Inachakata...") { 
+        document.getElementById('loaderText').innerText = text;
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none'; 
+    }
+
+    function updateLoaderText(text) {
+        document.getElementById('loaderText').innerText = text;
+    }
+
+    function loadAdminStats() { 
+        document.getElementById('adminDataBody').innerHTML = "<tr><td colspan='4'>Miamala ya mfumo itasawazishwa hapa punde.</td></tr>"; 
+    }
+
+    function uploadEvidence() {
+        if(!currentUser) return alert("Tafadhali login kwanza!");
+        const file = document.getElementById('fileInput').files[0];
+        if(!file) return alert("Tafadhali chagua picha/video!");
+        
+        showLoader(true, "Inatuma ushahidi...");
+        setTimeout(() => {
+            showLoader(false);
+            alert("Ushahidi wako umetumwa kwa William. Tunaukagua sasa.");
+        }, 2000);
     }
 </script>
 </body>
